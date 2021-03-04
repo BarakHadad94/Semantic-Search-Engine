@@ -50,9 +50,22 @@ if __name__ == '__main__':
 
         # FOR EACH LAW, COUNT THE NUMBER OF TIMES IT HAS A WORD FROM THE SIMILAR WORDS LIST
         # THE LAW WITH THE HIGHEST RESULT WILL BE THE ANSWER
-        count_total_equal = 0
-        count_one_law_equal = 0
-        result = ""
+        count_temp_law_equal = 0
+        count_first_law_equal = 0
+        count_sec_law_equal = 0
+        count_third_law_equal = 0
+        count_forth_law_equal = 0
+        count_fifth_law_equal = 0
+        first_result = ""
+        law_of_first_result = ""
+        sec_result = ""
+        law_of_sec_result = ""
+        third_result = ""
+        law_of_third_result = ""
+        fourth_result = ""
+        law_of_fourth_result = ""
+        fifth_result = ""
+        law_of_fifth_result = ""
         for law in main_law_list:
             for section in law:
                 # SPLIT THE LAW SECTION STRING INTO AN ARRAY
@@ -66,18 +79,167 @@ if __name__ == '__main__':
                                 if word_in_law in tfidf_dict.keys():
                                     new_val = tfidf_dict[word_in_law] * 10
                                     new_val = new_val * new_val * new_val
-                                    count_one_law_equal = count_one_law_equal + new_val
+                                    count_temp_law_equal = count_temp_law_equal + new_val
                 # IF COUNTER OF THIS LAW IS BIGGER THAN PREV COUNTER, THIS LAW IS A BETTER ANSWER
-                if count_one_law_equal > count_total_equal:
-                    count_total_equal = count_one_law_equal
-                    result = section
-                count_one_law_equal = 0
+                if count_temp_law_equal > count_first_law_equal:
+                    # UPDATE ALL FIRST 5 PLACES OF THE RESULTS
+                    count_fifth_law_equal = count_forth_law_equal
+                    fifth_result = fourth_result
+                    law_of_fifth_result = law_of_fourth_result
+
+                    count_forth_law_equal = count_third_law_equal
+                    fourth_result = third_result
+                    law_of_fourth_result = law_of_third_result
+
+                    count_third_law_equal = count_sec_law_equal
+                    third_result = sec_result
+                    law_of_third_result = law_of_sec_result
+
+                    count_sec_law_equal = count_first_law_equal
+                    sec_result = first_result
+                    law_of_sec_result = law_of_first_result
+
+                    count_first_law_equal = count_temp_law_equal
+                    first_result = section
+                    law_of_first_result = law[0]
+                else:
+                    if count_temp_law_equal > count_sec_law_equal:
+                        # UPDATE PLACES 2,3,4,5 OF THE RESULTS
+                        count_fifth_law_equal = count_forth_law_equal
+                        fifth_result = fourth_result
+                        law_of_fifth_result = law_of_fourth_result
+
+                        count_forth_law_equal = count_third_law_equal
+                        fourth_result = third_result
+                        law_of_fourth_result = law_of_third_result
+
+                        count_third_law_equal = count_sec_law_equal
+                        third_result = sec_result
+                        law_of_third_result = law_of_sec_result
+
+                        count_sec_law_equal = count_temp_law_equal
+                        sec_result = section
+                        law_of_sec_result = law[0]
+                    else:
+                        if count_temp_law_equal > count_third_law_equal:
+                            # UPDATE PLACES 3,4,5 OF THE RESULTS
+                            count_fifth_law_equal = count_forth_law_equal
+                            fifth_result = fourth_result
+                            law_of_fifth_result = law_of_fourth_result
+
+                            count_forth_law_equal = count_third_law_equal
+                            fourth_result = third_result
+                            law_of_fourth_result = law_of_third_result
+
+                            count_third_law_equal = count_temp_law_equal
+                            third_result = section
+                            law_of_third_result = law[0]
+                        else:
+                            if count_temp_law_equal > count_forth_law_equal:
+                                # UPDATE PLACES 4,5 OF THE RESULTS
+                                count_fifth_law_equal = count_forth_law_equal
+                                fifth_result = fourth_result
+                                law_of_fifth_result = law_of_fourth_result
+
+                                count_forth_law_equal = count_temp_law_equal
+                                fourth_result = section
+                                law_of_fourth_result = law[0]
+                            else:
+                                if count_temp_law_equal > count_fifth_law_equal:
+                                    # UPDATE FIFTH PLACE OF THE RESULTS
+                                    count_fifth_law_equal = count_temp_law_equal
+                                    fifth_result = section
+                                    law_of_fifth_result = law[0]
+                count_temp_law_equal = 0
 
         # PRINT THE ANSWER FOR THE SEARCH
-        print("The most suitable law section for your search is : ")
-        print(result)
+        print("The most suitable law sections for your search is : \n")
+        print("(1)")
+        array_of_first_result = first_result.split()
+        check_if_found = 0
+        for word_in_result in array_of_first_result:
+            for lst in list_of_similar_lists:
+                if word_in_result in lst:
+                    print('\033[1m' + word_in_result, end=" ")
+                    check_if_found = 1
+                    break
+            if check_if_found == 0:
+                print('\033[0m' + word_in_result, end=" ")
+            check_if_found = 0
+        print('\033[0m' + "\n")
+        print("with suitability percentage of : " + repr(round(count_first_law_equal / 100)) + "%")
+        print("From the law : ")
+        print(law_of_first_result)
+        if sec_result != "":
+            print("\n(2)")
+            array_of_sec_result = sec_result.split()
+            check_if_found = 0
+            for word_in_result in array_of_sec_result:
+                for lst in list_of_similar_lists:
+                    if word_in_result in lst:
+                        print('\033[1m' + word_in_result, end=" ")
+                        check_if_found = 1
+                        break
+                if check_if_found == 0:
+                    print('\033[0m' + word_in_result, end=" ")
+                check_if_found = 0
+            print('\033[0m' + "\n")
+            print("with suitability percentage of : " + repr(round(count_sec_law_equal / 100)) + "%")
+            print("From the law : ")
+            print(law_of_sec_result)
+            if third_result != "":
+                print("\n(3)")
+                array_of_third_result = third_result.split()
+                check_if_found = 0
+                for word_in_result in array_of_third_result:
+                    for lst in list_of_similar_lists:
+                        if word_in_result in lst:
+                            print('\033[1m' + word_in_result, end=" ")
+                            check_if_found = 1
+                            break
+                    if check_if_found == 0:
+                        print('\033[0m' + word_in_result, end=" ")
+                    check_if_found = 0
+                print('\033[0m' + "\n")
+                print("with suitability percentage of : " + repr(round(count_third_law_equal / 100)) + "%")
+                print("From the law : ")
+                print(law_of_third_result)
+                if fourth_result != "":
+                    print("\n(4)")
+                    array_of_fourth_result = fourth_result.split()
+                    check_if_found = 0
+                    for word_in_result in array_of_fourth_result:
+                        for lst in list_of_similar_lists:
+                            if word_in_result in lst:
+                                print('\033[1m' + word_in_result, end=" ")
+                                check_if_found = 1
+                                break
+                        if check_if_found == 0:
+                            print('\033[0m' + word_in_result, end=" ")
+                        check_if_found = 0
+                    print('\033[0m' + "\n")
+                    print("with suitability percentage of : " + repr(round(count_forth_law_equal / 100)) + "%")
+                    print("From the law : ")
+                    print(law_of_fourth_result)
+                    if fifth_result != "":
+                        print("\n(5)")
+                        array_of_fifth_result = fifth_result.split()
+                        check_if_found = 0
+                        for word_in_result in array_of_fifth_result:
+                            for lst in list_of_similar_lists:
+                                if word_in_result in lst:
+                                    print('\033[1m' + word_in_result, end=" ")
+                                    check_if_found = 1
+                                    break
+                            if check_if_found == 0:
+                                print('\033[0m' + word_in_result, end=" ")
+                            check_if_found = 0
+                        print('\033[0m' + "\n")
+                        print("with suitability percentage of : " + repr(round(count_fifth_law_equal / 100)) + "%")
+                        print("From the law : ")
+                        print(law_of_fifth_result)
 
-        search_string = input("Please enter your search ('q' to quit) : ")
+        search_string = input("\nPlease enter your search ('q' to quit) : ")
 
     # CLOSE THE FILES
     main_law_file.close()
